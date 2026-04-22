@@ -8,14 +8,7 @@ export default function Hero() {
       alignItems: 'center', overflow: 'hidden'
     }}>
       <HeroCanvas />
-      <div style={{
-        position: 'absolute', top: '10%', right: 'clamp(1.5rem, 5vw, 3rem)',
-        fontFamily: "'Cormorant Garamond', serif",
-        fontSize: '8rem', fontWeight: 300,
-        color: 'var(--ink)', opacity: 0.04,
-        pointerEvents: 'none', userSelect: 'none',
-        zIndex: 1, lineHeight: 1
-      }}>Circle</div>
+
       <div style={{
         position: 'relative', zIndex: 2,
         maxWidth: 1200, margin: '0 auto',
