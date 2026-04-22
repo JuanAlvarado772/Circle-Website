@@ -43,16 +43,6 @@ function EarthMesh() {
           depthWrite={false}
         />
       </mesh>
-      {/* Atmosphere */}
-      <mesh>
-        <sphereGeometry args={[1.09, 32, 32]} />
-        <meshPhongMaterial
-          color={new THREE.Color(0x3388cc)}
-          transparent
-          opacity={0.07}
-          side={THREE.BackSide}
-        />
-      </mesh>
     </group>
   )
 }
