@@ -56,7 +56,6 @@ export default function PhaseOrb() {
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[5, 3, 5]} intensity={1.5} color="#fff8f0" />
-      <directionalLight position={[-4, -1, -3]} intensity={0.08} color="#2244aa" />
       <Suspense fallback={null}>
         <EarthMesh />
       </Suspense>

@@ -23,7 +23,7 @@ export default function Phases() {
             <div style={{
               animation: 'float 6s ease-in-out infinite',
               borderRadius: '50%',
-              boxShadow: '0 30px 80px rgba(40,100,180,0.35)',
+              boxShadow: '0 30px 80px rgba(0,0,0,0.18)',
               overflow: 'hidden',
               width: 220, height: 220,
             }}>
