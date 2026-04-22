@@ -1,0 +1,38 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #F5F0E8;
+  --cream-dark: #EDE6D6;
+  --blue: #7EC8E3;
+  --blue-light: #B8E4F2;
+  --blue-dark: #4AACCF;
+  --orange: #F4A96A;
+  --orange-light: #FAD0A8;
+  --orange-dark: #E8863A;
+  --ink: #1A1612;
+  --ink-soft: #3D3530;
+  --ink-muted: #7A6F65;
+  --white: #FFFFFF;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
