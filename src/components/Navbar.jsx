@@ -22,7 +22,7 @@ export default function Navbar() {
         transition: 'all 0.3s ease'
       }}>
         <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
-          <img src="/Logo_Circle_1.png" alt="Circle" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+          <img src="/Logo_Circle (1).png" alt="Circle" style={{ width: 32, height: 32, objectFit: 'contain' }} />
           <span style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: '1.4rem', fontWeight: 600,
