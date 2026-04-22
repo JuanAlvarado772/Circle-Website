@@ -14,11 +14,11 @@ const badges = [
 
 export default function Phases() {
   return (
-    <section id="phases" style={{ background: 'var(--cream-dark)', padding: 'clamp(4rem, 8vw, 8rem) clamp(1.25rem, 5vw, 3rem)' }}>
+    <section id="phases" style={{ background: 'var(--cream-dark)', padding: 'clamp(3rem, 6vw, 6rem) clamp(1.25rem, 5vw, 3rem)' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
         {/* Orb visual — hidden on mobile */}
-        <div className="phases-orb-wrap" style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+        <div className="phases-orb-wrap" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
           <div style={{ position: 'relative', width: 280, height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{
               animation: 'float 6s ease-in-out infinite',

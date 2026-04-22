@@ -9,6 +9,14 @@ export default function Hero() {
     }}>
       <HeroCanvas />
       <div style={{
+        position: 'absolute', top: '10%', right: 'clamp(1.5rem, 5vw, 3rem)',
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: '8rem', fontWeight: 300,
+        color: 'var(--ink)', opacity: 0.04,
+        pointerEvents: 'none', userSelect: 'none',
+        zIndex: 1, lineHeight: 1
+      }}>Circle</div>
+      <div style={{
         position: 'relative', zIndex: 2,
         maxWidth: 1200, margin: '0 auto',
         padding: 'clamp(5rem, 10vw, 8rem) clamp(1.5rem, 5vw, 3rem) 2rem',
@@ -28,7 +36,7 @@ export default function Hero() {
 
         <h1 style={{
           fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(3.5rem, 7vw, 6.5rem)',
+          fontSize: 'clamp(4rem, 7vw, 6.5rem)',
           fontWeight: 300, lineHeight: 1.05,
           color: 'var(--ink)', maxWidth: 720,
           marginBottom: '1.5rem', opacity: 0,

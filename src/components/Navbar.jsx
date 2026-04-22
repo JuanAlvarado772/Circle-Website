@@ -21,12 +21,12 @@ export default function Navbar() {
         borderBottom: '1px solid rgba(26,22,18,0.07)',
         transition: 'all 0.3s ease'
       }}>
-        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
-          <img src="/Logo_Circle (1).png" alt="Circle" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', borderRadius: '8px', overflow: 'hidden' }}>
+          <img src="/Logo_Circle (1).png" alt="Circle" style={{ width: 42, height: 42, objectFit: 'contain', background: 'transparent' }} />
           <span style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: '1.4rem', fontWeight: 600,
-            color: 'var(--ink)', letterSpacing: '0.02em'
+            fontSize: '1.75rem', fontWeight: 700,
+            color: 'var(--ink)', letterSpacing: '0.05em'
           }}>Circle</span>
         </a>
 
