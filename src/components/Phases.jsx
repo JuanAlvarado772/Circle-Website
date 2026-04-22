@@ -1,3 +1,5 @@
+import PhaseOrb from './PhaseOrb'
+
 const phases = [
   { num: '1', bg: 'var(--blue)', border: 'none', color: 'var(--ink)', title: 'Events & Discovery', body: 'Explore events, connect via QR, host communities, build your profile from real experiences.' },
   { num: '2', bg: 'var(--orange-light)', border: 'none', color: 'var(--ink)', title: 'The Social Layer', body: 'Dynamic profiles, a badge system for milestones, and a feed showing what events friends attended.' },
@@ -19,11 +21,14 @@ export default function Phases() {
         <div className="phases-orb-wrap" style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
           <div style={{ position: 'relative', width: 280, height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{
-              width: 220, height: 220, borderRadius: '50%',
-              background: 'radial-gradient(circle at 35% 35%, var(--blue-light), var(--blue))',
               animation: 'float 6s ease-in-out infinite',
-              boxShadow: '0 30px 80px rgba(126,200,227,0.35)'
-            }} />
+              borderRadius: '50%',
+              boxShadow: '0 30px 80px rgba(40,100,180,0.35)',
+              overflow: 'hidden',
+              width: 220, height: 220,
+            }}>
+              <PhaseOrb />
+            </div>
             {badges.map(b => (
               <div key={b.label} style={{
                 position: 'absolute', background: 'white', borderRadius: 14,
