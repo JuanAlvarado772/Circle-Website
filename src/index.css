@@ -36,3 +36,7 @@ body {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 1; }
 }
+
+@media (max-width: 768px) {
+  #hero { min-height: 100svh; }
+}

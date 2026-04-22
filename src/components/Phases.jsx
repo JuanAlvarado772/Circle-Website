@@ -12,48 +12,53 @@ const badges = [
 
 export default function Phases() {
   return (
-    <section id="phases" style={{ background: 'var(--cream-dark)', padding: '8rem 3rem' }}>
-      <div style={{
-        maxWidth: 1200, margin: '0 auto',
-        display: 'grid', gridTemplateColumns: '1fr 1fr',
-        gap: '5rem', alignItems: 'center'
-      }}>
-        <div style={{ position: 'relative', height: 420, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{
-            width: 300, height: 300, borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 35%, var(--blue-light), var(--blue))',
-            animation: 'float 6s ease-in-out infinite',
-            boxShadow: '0 30px 80px rgba(126,200,227,0.35)'
-          }} />
-          {badges.map(b => (
-            <div key={b.label} style={{
-              position: 'absolute', background: 'white', borderRadius: 14,
-              padding: '0.85rem 1.1rem', boxShadow: '0 8px 30px rgba(26,22,18,0.12)',
-              display: 'flex', alignItems: 'center', gap: '0.65rem',
-              fontSize: '0.8125rem', fontWeight: 500, color: 'var(--ink)',
-              whiteSpace: 'nowrap', animation: `float 6s ease-in-out ${b.delay} infinite`,
-              top: b.top, right: b.right, bottom: b.bottom, left: b.left
-            }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: b.dot, flexShrink: 0 }} />
-              {b.label}
-            </div>
-          ))}
+    <section id="phases" style={{ background: 'var(--cream-dark)', padding: 'clamp(4rem, 8vw, 8rem) clamp(1.25rem, 5vw, 3rem)' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+
+        {/* Orb visual — hidden on mobile */}
+        <div className="phases-orb-wrap" style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+          <div style={{ position: 'relative', width: 280, height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{
+              width: 220, height: 220, borderRadius: '50%',
+              background: 'radial-gradient(circle at 35% 35%, var(--blue-light), var(--blue))',
+              animation: 'float 6s ease-in-out infinite',
+              boxShadow: '0 30px 80px rgba(126,200,227,0.35)'
+            }} />
+            {badges.map(b => (
+              <div key={b.label} style={{
+                position: 'absolute', background: 'white', borderRadius: 14,
+                padding: '0.65rem 0.9rem',
+                boxShadow: '0 8px 30px rgba(26,22,18,0.12)',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                fontSize: '0.75rem', fontWeight: 500, color: 'var(--ink)',
+                whiteSpace: 'nowrap', animation: `float 6s ease-in-out ${b.delay} infinite`,
+                top: b.top, right: b.right, bottom: b.bottom, left: b.left
+              }}>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: b.dot, flexShrink: 0 }} />
+                {b.label}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div>
+        {/* Text */}
+        <div style={{ maxWidth: 600, margin: '0 auto' }}>
           <p style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--orange-dark)', marginBottom: '1.5rem' }}>Roadmap</p>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2.25rem, 4vw, 3.75rem)', fontWeight: 300, lineHeight: 1.15, color: 'var(--ink)' }}>
+          <h2 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(2rem, 5vw, 3.75rem)',
+            fontWeight: 300, lineHeight: 1.15, color: 'var(--ink)', marginBottom: '2.5rem'
+          }}>
             Growing with{' '}
             <em style={{ fontStyle: 'italic', color: 'var(--orange-dark)' }}>you</em>
           </h2>
-          <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
             {phases.map(p => (
               <div key={p.num} style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
                 <div style={{
-                  width: 36, height: 36, borderRadius: '50%',
+                  width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: "'Cormorant Garamond', serif", fontSize: '1rem',
-                  fontWeight: 600, flexShrink: 0, marginTop: 2,
+                  fontFamily: "'Cormorant Garamond', serif", fontSize: '1rem', fontWeight: 600,
                   background: p.bg, border: p.border, color: p.color
                 }}>{p.num}</div>
                 <div>

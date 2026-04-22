@@ -8,47 +8,33 @@ export default function Problem() {
   return (
     <section id="problem" style={{
       background: 'var(--ink)', color: 'var(--cream)',
-      padding: '7rem 3rem', position: 'relative', overflow: 'hidden'
+      padding: 'clamp(4rem, 8vw, 7rem) clamp(1.25rem, 5vw, 3rem)',
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <p style={{
-          fontSize: '0.7rem', fontWeight: 500,
-          letterSpacing: '0.15em', textTransform: 'uppercase',
-          color: 'var(--blue)', marginBottom: '1.5rem'
-        }}>The Problem</p>
+        <p style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--blue)', marginBottom: '1.5rem' }}>The Problem</p>
         <h2 style={{
           fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
-          fontWeight: 300, lineHeight: 1.15
+          fontSize: 'clamp(2rem, 5vw, 3.75rem)',
+          fontWeight: 300, lineHeight: 1.15, marginBottom: '1rem'
         }}>
           Social events should not{' '}
           <em style={{ fontStyle: 'italic', color: 'var(--orange)' }}>end</em>{' '}
           when you leave.
         </h2>
         <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-          gap: '1.5rem', marginTop: '4rem'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: '1.25rem', marginTop: '3rem'
         }}>
           {cards.map(c => (
             <div key={c.n} style={{
               background: 'rgba(245,240,232,0.04)',
               border: '1px solid rgba(245,240,232,0.1)',
-              borderRadius: 16, padding: '2rem'
+              borderRadius: 16, padding: '1.75rem'
             }}>
-              <div style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: '3rem', fontWeight: 300,
-                color: 'rgba(126,200,227,0.25)',
-                lineHeight: 1, marginBottom: '1rem'
-              }}>{c.n}</div>
-              <h3 style={{
-                fontSize: '1.0625rem', fontWeight: 500,
-                color: 'var(--cream)', marginBottom: '0.75rem', lineHeight: 1.4
-              }}>{c.title}</h3>
-              <p style={{
-                fontSize: '0.9rem', color: 'rgba(245,240,232,0.55)',
-                lineHeight: 1.7, fontWeight: 300
-              }}>{c.body}</p>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', fontWeight: 300, color: 'rgba(126,200,227,0.25)', lineHeight: 1, marginBottom: '1rem' }}>{c.n}</div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--cream)', marginBottom: '0.75rem', lineHeight: 1.4 }}>{c.title}</h3>
+              <p style={{ fontSize: '0.875rem', color: 'rgba(245,240,232,0.55)', lineHeight: 1.7, fontWeight: 300 }}>{c.body}</p>
             </div>
           ))}
         </div>

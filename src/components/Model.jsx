@@ -6,18 +6,26 @@ const cards = [
 
 export default function Model() {
   return (
-    <section id="model" style={{ background: 'var(--ink)', color: 'var(--cream)', padding: '8rem 3rem' }}>
+    <section id="model" style={{ background: 'var(--ink)', color: 'var(--cream)', padding: 'clamp(4rem, 8vw, 8rem) clamp(1.25rem, 5vw, 3rem)' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <p style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--blue)', marginBottom: '1.5rem' }}>Business Model</p>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2.25rem, 4vw, 3.75rem)', fontWeight: 300, lineHeight: 1.15 }}>
+        <h2 style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 'clamp(2rem, 5vw, 3.75rem)',
+          fontWeight: 300, lineHeight: 1.15, marginBottom: '1rem'
+        }}>
           Built to{' '}
           <em style={{ fontStyle: 'italic', color: 'var(--orange)' }}>grow together</em>
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '4rem' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: '1.25rem', marginTop: '3rem'
+        }}>
           {cards.map(c => (
-            <div key={c.title} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 18, padding: '2.25rem 2rem' }}>
+            <div key={c.title} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 18, padding: '2rem 1.75rem' }}>
               <div style={{ fontSize: '1.75rem', marginBottom: '1.25rem' }}>{c.icon}</div>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', fontWeight: 400, color: 'var(--cream)', marginBottom: '0.75rem' }}>{c.title}</h3>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', fontWeight: 400, color: 'var(--cream)', marginBottom: '0.75rem' }}>{c.title}</h3>
               <p style={{ fontSize: '0.875rem', color: 'rgba(245,240,232,0.6)', lineHeight: 1.7, fontWeight: 300 }}>{c.body}</p>
               <div style={{ marginTop: '1.25rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {c.pills.map(p => (
