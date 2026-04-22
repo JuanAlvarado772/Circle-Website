@@ -11,7 +11,8 @@ export default function Hero() {
       <div style={{
         position: 'relative', zIndex: 2,
         maxWidth: 1200, margin: '0 auto',
-        padding: '0 3rem', paddingTop: '5rem'
+        padding: 'clamp(5rem, 10vw, 8rem) clamp(1.5rem, 5vw, 3rem) 2rem',
+        width: '100%'
       }}>
         <span style={{
           display: 'inline-flex', alignItems: 'center',
@@ -72,12 +73,12 @@ export default function Hero() {
       </div>
 
       <div style={{
-        position: 'absolute', bottom: '2.5rem',
+        position: 'absolute', bottom: '1.5rem',
         left: '50%', transform: 'translateX(-50%)',
         zIndex: 2, display: 'flex', flexDirection: 'column',
         alignItems: 'center', gap: '0.5rem',
         opacity: 0, animation: 'fadeUp 1s ease 1.5s forwards'
-      }}>
+      }} className="scroll-hint">
         <span style={{
           fontSize: '0.7rem', letterSpacing: '0.15em',
           textTransform: 'uppercase', color: 'var(--ink-muted)'

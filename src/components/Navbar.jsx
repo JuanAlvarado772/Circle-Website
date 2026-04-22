@@ -32,8 +32,7 @@ export default function Navbar() {
 
         {/* Desktop links */}
         <ul style={{
-          display: 'flex', alignItems: 'center', gap: '2rem', listStyle: 'none',
-          '@media(max-width:768px)': { display: 'none' }
+          display: 'flex', alignItems: 'center', gap: '2rem', listStyle: 'none'
         }} className="nav-desktop">
           {[
             ['#problem', 'The Problem'],
