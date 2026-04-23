@@ -10,45 +10,77 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const links = [
+    ['#problem', 'Why Circle'],
+    ['#solution', 'How It Works'],
+    ['#phases', 'Roadmap'],
+    ['#model', 'For Businesses'],
+  ]
+
   return (
     <>
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '1.25rem 1.5rem',
-        background: scrolled ? 'rgba(245,240,232,0.92)' : 'rgba(245,240,232,0.75)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(26,22,18,0.07)',
-        transition: 'all 0.3s ease'
+        padding: '1.1rem 2rem',
+        background: scrolled ? 'rgba(245,240,232,0.96)' : 'rgba(245,240,232,0.72)',
+        backdropFilter: 'blur(16px)',
+        borderBottom: scrolled ? '1px solid rgba(26,22,18,0.09)' : '1px solid transparent',
+        transition: 'all 0.35s ease'
       }}>
-        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', borderRadius: '8px', overflow: 'hidden' }}>
-          <img src="/Logo_Circle (1).png" alt="Circle" style={{ width: 42, height: 42, objectFit: 'contain', background: 'transparent' }} />
+
+        {/* Logo + Brand */}
+        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
+          <img
+            src="/Logo_Circle (1).png"
+            alt="Circle"
+            style={{ width: 38, height: 38, objectFit: 'contain' }}
+          />
           <span style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: '1.75rem', fontWeight: 700,
-            color: 'var(--ink)', letterSpacing: '0.05em'
-          }}>Circle</span>
+            fontSize: '1.6rem', fontWeight: 600,
+            color: 'var(--ink)', letterSpacing: '0.025em',
+            lineHeight: 1
+          }}>
+            Circle
+          </span>
         </a>
 
-        {/* Desktop links */}
+        {/* Desktop nav */}
         <ul style={{
-          display: 'flex', alignItems: 'center', gap: '2rem', listStyle: 'none'
+          display: 'flex', alignItems: 'center', gap: '2.25rem', listStyle: 'none'
         }} className="nav-desktop">
-          {[
-            ['#problem', 'The Problem'],
-            ['#solution', "Who It's For"],
-            ['#phases', 'Roadmap'],
-            ['#model', 'Business']
-          ].map(([href, label]) => (
+          {links.map(([href, label]) => (
             <li key={href}>
-              <a href={href} style={{ textDecoration: 'none', color: 'var(--ink-soft)', fontSize: '0.875rem' }}>{label}</a>
+              <a href={href} style={{
+                textDecoration: 'none',
+                color: 'var(--ink-soft)',
+                fontSize: '0.875rem',
+                fontWeight: 400,
+                letterSpacing: '0.01em',
+                transition: 'color 0.2s'
+              }}
+                onMouseEnter={e => e.currentTarget.style.color = 'var(--ink)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-soft)'}
+              >
+                {label}
+              </a>
             </li>
           ))}
           <li>
             <a href="#cta" style={{
-              textDecoration: 'none', color: 'var(--cream)', background: 'var(--ink)',
-              padding: '0.55rem 1.4rem', borderRadius: '100px', fontSize: '0.875rem', fontWeight: 500
-            }}>Join Waitlist</a>
+              textDecoration: 'none', color: 'var(--cream)',
+              background: 'var(--ink)',
+              padding: '0.6rem 1.6rem', borderRadius: '100px',
+              fontSize: '0.9rem', fontWeight: 500,
+              letterSpacing: '0.01em',
+              transition: 'opacity 0.2s'
+            }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '0.82'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >
+              Join Waitlist
+            </a>
           </li>
         </ul>
 
@@ -56,6 +88,7 @@ export default function Navbar() {
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="nav-hamburger"
+          aria-label="Toggle menu"
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
             display: 'flex', flexDirection: 'column', gap: '5px', padding: '4px'
@@ -70,17 +103,12 @@ export default function Navbar() {
       {menuOpen && (
         <div style={{
           position: 'fixed', top: '65px', left: 0, right: 0, zIndex: 99,
-          background: 'rgba(245,240,232,0.98)', backdropFilter: 'blur(12px)',
+          background: 'rgba(245,240,232,0.98)', backdropFilter: 'blur(16px)',
           borderBottom: '1px solid rgba(26,22,18,0.07)',
-          display: 'flex', flexDirection: 'column', padding: '1.5rem',
+          display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem',
           gap: '1.25rem'
         }}>
-          {[
-            ['#problem', 'The Problem'],
-            ['#solution', "Who It's For"],
-            ['#phases', 'Roadmap'],
-            ['#model', 'Business']
-          ].map(([href, label]) => (
+          {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setMenuOpen(false)} style={{
               textDecoration: 'none', color: 'var(--ink-soft)',
               fontSize: '1rem', fontWeight: 400
@@ -88,8 +116,9 @@ export default function Navbar() {
           ))}
           <a href="#cta" onClick={() => setMenuOpen(false)} style={{
             textDecoration: 'none', color: 'var(--cream)', background: 'var(--ink)',
-            padding: '0.75rem 1.5rem', borderRadius: '100px',
-            fontSize: '0.9375rem', fontWeight: 500, textAlign: 'center'
+            padding: '0.85rem 1.5rem', borderRadius: '100px',
+            fontSize: '0.9375rem', fontWeight: 500, textAlign: 'center',
+            marginTop: '0.25rem'
           }}>Join Waitlist</a>
         </div>
       )}
