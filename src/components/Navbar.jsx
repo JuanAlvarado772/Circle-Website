@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function Navbar() {
+export default function Navbar({ onWaitlistClick }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -14,7 +14,7 @@ export default function Navbar() {
     ['#problem', 'Why Circle'],
     ['#solution', 'How It Works'],
     ['#phases', 'Roadmap'],
-    ['#model', 'For Businesses'],
+    ['#model', 'Business Model'],
   ]
 
   return (
@@ -68,13 +68,14 @@ export default function Navbar() {
             </li>
           ))}
           <li>
-            <a href="#cta" style={{
+            <a href="#cta"  onClick={onWaitlistClick} style={{
               textDecoration: 'none', color: 'var(--cream)',
               background: 'var(--ink)',
               padding: '0.6rem 1.6rem', borderRadius: '100px',
               fontSize: '0.9rem', fontWeight: 500,
               letterSpacing: '0.01em',
-              transition: 'opacity 0.2s'
+              transition: 'opacity 0.2s',
+              
             }}
               onMouseEnter={e => e.currentTarget.style.opacity = '0.82'}
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}

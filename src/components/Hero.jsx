@@ -1,6 +1,6 @@
 import HeroCanvas from './HeroCanvas'
 
-export default function Hero() {
+export default function Hero({ onWaitlistClick }) {
   return (
     <section
       id="hero"
@@ -97,6 +97,7 @@ export default function Hero() {
           <a
             href="#cta"
             className="cta-primary"
+            onClick={onWaitlistClick}
             style={{
               display: 'inline-flex', alignItems: 'center',
               textDecoration: 'none',
@@ -106,6 +107,7 @@ export default function Hero() {
               borderRadius: '100px',
               letterSpacing: '0.01em',
               transition: 'opacity 0.2s, transform 0.2s',
+              
             }}
           >
             Join the Waitlist

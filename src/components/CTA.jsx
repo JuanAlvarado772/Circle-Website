@@ -1,4 +1,4 @@
-export default function CTA() {
+export default function CTA({ onWaitlistClick }) {
   return (
     <section id="cta" style={{ background: 'var(--cream)', padding: '9rem 3rem', textAlign: 'center' }}>
       <div style={{ maxWidth: 700, margin: '0 auto' }}>
@@ -11,7 +11,7 @@ export default function CTA() {
           Join the waitlist and be among the first to experience Circle — where every event is just the beginning.
         </p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-          <a href="#" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--ink)', color: 'var(--cream)', fontSize: '0.9375rem', fontWeight: 500, padding: '0.85rem 2rem', borderRadius: '100px', textDecoration: 'none' }}>
+          <a href="#" onClick={onWaitlistClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--ink)', color: 'var(--cream)', fontSize: '0.9375rem', fontWeight: 500, padding: '0.85rem 2rem', borderRadius: '100px', textDecoration: 'none' }}>
             Join the Waitlist
           </a>
           <a href="mailto:hello@circleapp.com" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ink)', border: '1.5px solid var(--ink)', fontSize: '0.9375rem', fontWeight: 400, padding: '0.85rem 2rem', borderRadius: '100px', textDecoration: 'none' }}>

@@ -73,32 +73,40 @@ function buildCubicPath(nodes) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  LAYOUT STRATEGY
+//  MOBILE SVG GEOMETRY — 1:1 pixel mapping
 //
-//  Desktop: full-width alternating layout
-//    - SVG viewBox 760 × VH, nodes weave ±55px from center spine
-//    - Cards positioned left/right of center via absolute positioning
+//  Key principle: M_VW === SVG_COL_W (both = 56px)
+//  → viewBox units === CSS pixels on BOTH axes
+//  → scale = 1:1, no distortion, no sub-pixel blurring
+//  → circles are perfectly round, strokes are crisp
+//  → dot/card positions need NO conversion: pt.x and pt.y are already CSS px
 //
-//  Mobile: left-column layout (NEW — fixes the clipping bug)
-//    - Section has paddingLeft: 20px
-//    - SVG is a slim 80px-wide column on the left, nodes weave ±18px around x=40
-//    - Cards sit to the RIGHT of the SVG column, normal document flow
-//    - No absolute card positioning → no overflow possible
-//    - Row heights are shorter since cards flow, not float
+//  The S-curve fits within 56px wide:
+//  - spine at x=28 (center of column)
+//  - nodes alternate ±12px → x=40 or x=16
+//  - plenty of visual weave for a slim column
 // ─────────────────────────────────────────────────────────────────────────────
 
-const DESKTOP_ROW  = 500
-const MOBILE_ROW   = 370   // shorter because cards are in-flow, not floated
-
-// Mobile SVG: slim left column
-const M_VW    = 80          // viewBox width (slim column)
-const M_SPINE = 40          // center of the column
-const M_SWING = 14          // how much nodes weave left/right
-
-// Desktop SVG
+// Desktop
 const D_VW    = 760
 const D_SPINE = 380
 const D_SWING = 55
+const D_ROW   = 500
+
+// Mobile — all units are CSS pixels (1:1 with viewBox)
+const SVG_COL_W  = 56   // rendered px width AND viewBox width → scale = 1.0
+const M_SPINE    = 28   // center of 56px column
+const M_SWING    = 12   // node weave ±12px from spine
+const M_ROW      = 420  // vertical spacing between nodes (px = viewBox units)
+
+// Layout constants
+const WRAPPER_PAD_LEFT   = 16   // section left padding
+const COL_TO_CARD_GAP    = 12   // gap between SVG column right edge and card
+const CARD_CONTAINER_X   = WRAPPER_PAD_LEFT + SVG_COL_W + COL_TO_CARD_GAP
+
+// Node ring sizes (px, exact)
+const M_NODE_OUTER_R = 14  // outer ring radius
+const M_NODE_INNER_R = 5   // filled inner dot radius
 
 export default function Phases() {
   const sectionRef = useRef(null)
@@ -113,7 +121,7 @@ export default function Phases() {
   )
   const [pathLen, setPathLen] = useState(0)
 
-  // Responsive breakpoint
+  // ── Breakpoint detection ────────────────────────────────────────────────────
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)')
     const handler = e => setIsMobile(e.matches)
@@ -121,12 +129,12 @@ export default function Phases() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // Geometry
-  const ROW   = isMobile ? MOBILE_ROW  : DESKTOP_ROW
-  const VW    = isMobile ? M_VW        : D_VW
-  const SPINE = isMobile ? M_SPINE     : D_SPINE
-  const SWING = isMobile ? M_SWING     : D_SWING
-  const VH    = PHASES.length * ROW + 120
+  // ── Geometry ────────────────────────────────────────────────────────────────
+  const ROW   = isMobile ? M_ROW   : D_ROW
+  const VW    = isMobile ? SVG_COL_W : D_VW   // mobile: VW = SVG_COL_W → 1:1
+  const SPINE = isMobile ? M_SPINE : D_SPINE
+  const SWING = isMobile ? M_SWING : D_SWING
+  const VH    = PHASES.length * ROW + 120      // same units as ROW
 
   const NODES = PHASES.map((_, i) => ({
     x: SPINE + (i % 2 === 0 ? SWING : -SWING),
@@ -135,7 +143,7 @@ export default function Phases() {
 
   const PATH_D = buildCubicPath(NODES)
 
-  // Measure path after paint
+  // ── Measure path ────────────────────────────────────────────────────────────
   useEffect(() => {
     const id = setTimeout(() => {
       const path = pathRef.current
@@ -146,11 +154,11 @@ export default function Phases() {
         path.style.strokeDashoffset = `${len}`
         setPathLen(len)
       }
-    }, 80)
+    }, 100)
     return () => clearTimeout(id)
   }, [isMobile, PATH_D])
 
-  // Reset cards on breakpoint switch
+  // ── Reset cards on breakpoint switch ────────────────────────────────────────
   useEffect(() => {
     cardRefs.current.forEach(c => {
       if (!c) return
@@ -159,7 +167,7 @@ export default function Phases() {
     })
   }, [isMobile])
 
-  // Scroll handler
+  // ── Scroll handler ─────────────────────────────────────────────────────────
   const onScroll = useCallback(() => {
     const section = sectionRef.current
     const path    = pathRef.current
@@ -175,25 +183,32 @@ export default function Phases() {
         ? Math.max(0, Math.min(1, -rect.top / scrollable))
         : 0
 
-      // Draw path
       path.style.strokeDashoffset = `${pathLen * (1 - progress)}`
 
-      // Traveling dot
-      if (dot && svgEl) {
-        const safeP    = Math.min(progress, 0.9999)
-        const pt       = path.getPointAtLength(pathLen * safeP)
-        const svgRect  = svgEl.getBoundingClientRect()
-        const innerEl  = sectionRef.current.querySelector('.journey-inner')
-        const innerRect = innerEl ? innerEl.getBoundingClientRect() : svgRect
-        const scaleX   = svgRect.width  / VW
-        const scaleY   = svgRect.height / VH
-        dot.style.left = `${(svgRect.left - innerRect.left) + pt.x * scaleX}px`
-        dot.style.top  = `${pt.y * scaleY}px`
+      if (dot) {
+        const safeP = Math.min(progress, 0.9999)
+        const pt    = path.getPointAtLength(pathLen * safeP)
+
+        if (isMobile) {
+          // 1:1 mapping — pt.x and pt.y are already CSS px within the SVG column
+          // Dot is positioned relative to mobile-wrapper (position:relative)
+          // SVG column starts at WRAPPER_PAD_LEFT from wrapper left edge
+          dot.style.left = `${WRAPPER_PAD_LEFT + pt.x}px`
+          dot.style.top  = `${pt.y}px`
+        } else {
+          if (!svgEl) return
+          const svgRect   = svgEl.getBoundingClientRect()
+          const innerEl   = sectionRef.current.querySelector('.journey-inner')
+          const innerRect = innerEl ? innerEl.getBoundingClientRect() : svgRect
+          const scaleX    = svgRect.width  / D_VW
+          const scaleY    = svgRect.height / VH
+          dot.style.left  = `${(svgRect.left - innerRect.left) + pt.x * scaleX}px`
+          dot.style.top   = `${pt.y * scaleY}px`
+        }
       }
 
-      // Reveal cards
       NODES.forEach((node, i) => {
-        const threshold = Math.max(0, (node.y - 60) / VH - 0.03)
+        const threshold = Math.max(0, (node.y - 80) / VH - 0.03)
         const card = cardRefs.current[i]
         if (!card) return
         const visible = progress >= threshold
@@ -201,7 +216,7 @@ export default function Phases() {
         card.style.transform = visible ? 'translateY(0)' : 'translateY(16px)'
       })
     })
-  }, [pathLen, NODES, VW, VH])
+  }, [pathLen, NODES, VH, isMobile])
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -212,10 +227,10 @@ export default function Phases() {
     }
   }, [onScroll])
 
-  // Desktop card position (absolute, alternating sides)
+  // ── Desktop card position ───────────────────────────────────────────────────
   function desktopCardStyle(node, i) {
-    const nodeXPct = (node.x / VW) * 100
-    const isRight  = i % 2 === 0  // node swings right → card goes left
+    const nodeXPct = (node.x / D_VW) * 100
+    const isRight  = i % 2 === 0
     return {
       position: 'absolute',
       top: node.y - 80,
@@ -228,29 +243,27 @@ export default function Phases() {
   }
 
   // ─── MOBILE RENDER ──────────────────────────────────────────────────────────
-  // Completely different DOM structure on mobile.
-  // SVG sits as a fixed-width left column; cards are normal in-flow divs
-  // positioned absolutely relative to a per-row wrapper div.
-  // No overflow possible because cards are contained within the row wrapper.
   if (isMobile) {
-    const SVG_COL_W = 64   // px — rendered width of the SVG column
-    const CARD_LEFT = SVG_COL_W + 12  // gap between column and card
-
     return (
       <section
         id="phases"
         ref={sectionRef}
-        style={{ background: 'var(--cream)', paddingBottom: '6rem', position: 'relative' }}
+        style={{ background: 'var(--cream)', paddingBottom: '5rem', position: 'relative' }}
       >
         <SectionHeader />
 
-        {/* Wrapper: left-pad for SVG column */}
-        <div style={{ position: 'relative', padding: '0 16px 0 16px', overflow: 'hidden' }}>
-
-          {/* SVG column — absolutely placed on the left */}
+        {/* Wrapper — position:relative anchors the dot */}
+        <div
+          style={{
+            position: 'relative',
+            paddingRight: 16,
+          }}
+        >
+          {/* SVG column — pinned left, exact pixel dimensions */}
           <div style={{
             position: 'absolute',
-            top: 0, left: 16,
+            top: 0,
+            left: WRAPPER_PAD_LEFT,
             width: SVG_COL_W,
             height: VH,
             zIndex: 1,
@@ -258,79 +271,105 @@ export default function Phases() {
           }}>
             <svg
               ref={svgRef}
-              viewBox={`0 0 ${M_VW} ${VH}`}
+              // viewBox width === rendered width === SVG_COL_W
+              // → scale = 1:1 on both axes → crisp, no distortion
+              viewBox={`0 0 ${SVG_COL_W} ${VH}`}
               preserveAspectRatio="xMidYMin meet"
               aria-hidden="true"
-              style={{ width: '100%', height: VH, overflow: 'visible' }}
+              style={{
+                display: 'block',
+                width: SVG_COL_W,
+                height: VH,
+                overflow: 'visible',
+                // Hint browser to rasterize on GPU layer → crisp on retina
+                willChange: 'transform',
+              }}
             >
               <defs>
-                <linearGradient id="roadGradM" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="mobileGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%"   stopColor="#4AACCF" stopOpacity="0.9" />
                   <stop offset="40%"  stopColor="#E8863A" stopOpacity="0.9" />
                   <stop offset="75%"  stopColor="#C9AA7A" stopOpacity="0.85" />
                   <stop offset="100%" stopColor="#A89080" stopOpacity="0.7"  />
                 </linearGradient>
               </defs>
-              <path d={PATH_D} fill="none" stroke="rgba(26,22,18,0.07)" strokeWidth="1.5" strokeLinecap="round" />
-              <path ref={pathRef} d={PATH_D} fill="none" stroke="url(#roadGradM)" strokeWidth="2" strokeLinecap="round" />
+
+              {/* Ghost track */}
+              <path
+                d={PATH_D}
+                fill="none"
+                stroke="rgba(26,22,18,0.09)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              {/* Animated draw path */}
+              <path
+                ref={pathRef}
+                d={PATH_D}
+                fill="none"
+                stroke="url(#mobileGrad)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+
+              {/* Node rings — coordinates are exact px, circles are perfectly round */}
               {NODES.map((pos, i) => {
                 const p = PHASES[i]
                 return (
                   <g key={i}>
-                    <circle cx={pos.x} cy={pos.y} r={17} fill="var(--cream)" stroke={p.accent} strokeWidth="1.5" />
-                    <circle cx={pos.x} cy={pos.y} r={5}  fill={p.status === 'future' ? 'rgba(26,22,18,0.14)' : p.accent} />
-                    <text
-                      x={pos.x} y={pos.y + 0.5}
-                      textAnchor="middle" dominantBaseline="middle"
-                      fontSize="7" fontFamily="DM Sans, sans-serif"
-                      fontWeight="500" fill={p.accent}
-                      style={{ userSelect: 'none' }}
-                    >
-                      {p.num}
-                    </text>
+                    <circle
+                      cx={pos.x} cy={pos.y}
+                      r={M_NODE_OUTER_R}
+                      fill="var(--cream)"
+                      stroke={p.accent}
+                      strokeWidth="1.5"
+                    />
+                    <circle
+                      cx={pos.x} cy={pos.y}
+                      r={M_NODE_INNER_R}
+                      fill={p.status === 'future' ? 'rgba(26,22,18,0.14)' : p.accent}
+                    />
                   </g>
                 )
               })}
             </svg>
           </div>
 
-          {/* Traveling dot (inside the same relative context) */}
+          {/* Traveling dot — positioned in same relative context as wrapper */}
           <div
             ref={dotRef}
             style={{
               position: 'absolute',
-              width: 10, height: 10,
+              width: 10,
+              height: 10,
               borderRadius: '50%',
               background: 'var(--ink)',
               border: '2px solid var(--cream)',
-              boxShadow: '0 0 0 2.5px rgba(26,22,18,0.09)',
+              boxShadow: '0 0 0 2.5px rgba(26,22,18,0.1)',
               transform: 'translate(-50%, -50%)',
               zIndex: 10,
               pointerEvents: 'none',
               willChange: 'top, left',
-              // Dot is positioned relative to this div, so we offset by the SVG column's left (16px)
             }}
           />
 
-          {/* Cards — stacked in flow, offset left by SVG column width */}
+          {/* Card column — right of SVG */}
           <div style={{
-            marginLeft: CARD_LEFT,
-            display: 'flex',
-            flexDirection: 'column',
-            height: VH,
             position: 'relative',
+            marginLeft: CARD_CONTAINER_X,
+            height: VH,
           }}>
             {PHASES.map((phase, i) => {
               const node = NODES[i]
-              // Position card so its vertical center aligns with the node circle
-              const cardTopOffset = node.y - 60
+              // node.y is exact CSS px (1:1 mapping) — align card with node center
+              const CARD_TOP_OFFSET = M_NODE_OUTER_R + 4  // just below node ring top
               return (
                 <div
                   key={i}
                   ref={el => { cardRefs.current[i] = el }}
                   style={{
                     position: 'absolute',
-                    top: cardTopOffset,
+                    top: node.y - CARD_TOP_OFFSET,
                     left: 0,
                     right: 0,
                     opacity: 0,
@@ -348,7 +387,7 @@ export default function Phases() {
 
         <style>{`
           @keyframes phasePulse {
-            0%,100% { opacity:1; transform:scale(1);  }
+            0%,100% { opacity:1; transform:scale(1);   }
             50%      { opacity:.5; transform:scale(.78); }
           }
         `}</style>
@@ -368,18 +407,20 @@ export default function Phases() {
       <div style={{ position: 'relative', maxWidth: 960, margin: '0 auto', padding: '0 1.5rem' }}>
         <div className="journey-inner" style={{ position: 'relative', height: VH }}>
 
-          {/* SVG */}
           <svg
             ref={svgRef}
-            viewBox={`0 0 ${VW} ${VH}`}
+            viewBox={`0 0 ${D_VW} ${VH}`}
             preserveAspectRatio="xMidYMin meet"
             aria-hidden="true"
             style={{
               position: 'absolute',
               top: 0, left: '50%',
               transform: 'translateX(-50%)',
-              width: '100%', maxWidth: VW, height: VH,
-              overflow: 'visible', pointerEvents: 'none',
+              width: '100%',
+              maxWidth: D_VW,
+              height: VH,
+              overflow: 'visible',
+              pointerEvents: 'none',
             }}
           >
             <defs>
@@ -398,9 +439,13 @@ export default function Phases() {
                 <g key={i}>
                   <circle cx={pos.x} cy={pos.y} r={23} fill="var(--cream)" stroke={p.accent} strokeWidth="1.5" />
                   <circle cx={pos.x} cy={pos.y} r={7}  fill={p.status === 'future' ? 'rgba(26,22,18,0.14)' : p.accent} />
-                  <text x={pos.x} y={pos.y + 0.5} textAnchor="middle" dominantBaseline="middle"
-                    fontSize="8" fontFamily="DM Sans, sans-serif" fontWeight="500" fill={p.accent}
-                    style={{ userSelect: 'none' }}>
+                  <text
+                    x={pos.x} y={pos.y + 0.5}
+                    textAnchor="middle" dominantBaseline="middle"
+                    fontSize="8" fontFamily="DM Sans, sans-serif"
+                    fontWeight="500" fill={p.accent}
+                    style={{ userSelect: 'none' }}
+                  >
                     {p.num}
                   </text>
                 </g>
@@ -408,7 +453,6 @@ export default function Phases() {
             })}
           </svg>
 
-          {/* Traveling dot */}
           <div ref={dotRef} style={{
             position: 'absolute',
             width: 12, height: 12,
@@ -422,7 +466,6 @@ export default function Phases() {
             willChange: 'top, left',
           }} />
 
-          {/* Cards */}
           {PHASES.map((phase, i) => (
             <div
               key={i}
@@ -443,7 +486,7 @@ export default function Phases() {
 
       <style>{`
         @keyframes phasePulse {
-          0%,100% { opacity:1; transform:scale(1);  }
+          0%,100% { opacity:1; transform:scale(1);   }
           50%      { opacity:.5; transform:scale(.78); }
         }
       `}</style>
@@ -451,13 +494,14 @@ export default function Phases() {
   )
 }
 
-// ─── Shared section header ─────────────────────────────────────────────────────
+// ─── Section header ────────────────────────────────────────────────────────────
 function SectionHeader() {
   return (
     <div style={{
       textAlign: 'center',
       padding: 'clamp(4.5rem, 8vw, 7.5rem) clamp(1.5rem, 5vw, 3rem) 0',
-      maxWidth: 600, margin: '0 auto',
+      maxWidth: 600,
+      margin: '0 auto',
     }}>
       <p style={{
         fontSize: '0.68rem', fontWeight: 500, letterSpacing: '0.16em',
